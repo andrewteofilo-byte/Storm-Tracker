@@ -613,6 +613,10 @@ function renderWarnings(warnings){
     const q=primaryAff?getQ(primaryAff.o):Q_BR[Math.floor(Math.random()*Q_BR.length)];
     const {str:cdStr,mins:cdMins}=formatCountdown(expires);
     const cdClass='countdown-val '+(cdMins<5?'urgent':cdMins<15?'ok':'safe');
+    // Get description text — clean it up
+    const rawDesc=props.description||props.headline||'';
+    const shortDesc=rawDesc.replace(/\*/g,'').replace(/\n+/g,' ').trim().substring(0,400);
+    const cardId=`card-${i}`;
     
     html+=`<div class="warning-card${isPDS?' pds':''}" style="animation-delay:${i*.04}s">
       <div class="warning-header">
@@ -655,6 +659,11 @@ function renderWarnings(warnings){
     }
     html+=`</div>
         <a href="${directAlertUrl}" target="_blank" class="nws-link">⚡ READ FULL WARNING → counties · cities · details</a>
+        ${shortDesc?`
+        <div style="margin-top:.5rem">
+          <button onclick="toggleDesc('${cardId}')" style="background:transparent;border:none;color:var(--dim);font-family:'Share Tech Mono',monospace;font-size:.6rem;letter-spacing:.1em;cursor:pointer;padding:.2rem 0">▶ SHOW NWS DESCRIPTION</button>
+          <div id="${cardId}" style="display:none;margin-top:.4rem;padding:.6rem .8rem;background:rgba(0,0,0,.3);border-left:2px solid var(--dim);border-radius:2px;font-family:'Share Tech Mono',monospace;font-size:.65rem;color:var(--text);line-height:1.6">${shortDesc}${rawDesc.length>400?'...':''}</div>
+        </div>`:''}
         <div class="quote-card" style="border-color:${q.c}">
           <div class="quote-who" style="color:${q.c}">${q.w}</div>
           <div class="quote-text">"${q.t}"</div>
@@ -667,6 +676,18 @@ function renderWarnings(warnings){
   document.getElementById('stateCount').textContent=states.size;
   document.getElementById('marketCount').textContent=markets.size;
   startTimers();
+}
+
+function toggleDesc(id){
+  const el=document.getElementById(id);
+  const btn=el.previousElementSibling;
+  if(el.style.display==='none'){
+    el.style.display='block';
+    btn.textContent='▼ HIDE NWS DESCRIPTION';
+  } else {
+    el.style.display='none';
+    btn.textContent='▶ SHOW NWS DESCRIPTION';
+  }
 }
 
 function filterWarnings(){
