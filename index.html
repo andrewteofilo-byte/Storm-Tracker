@@ -603,11 +603,9 @@ function renderWarnings(warnings){
     const dmaInfo=dmaName?DMA_AFF[dmaName]:null;
     if(dmaName) markets.add(dmaName);
     const isPDS=(props.description||props.headline||'').includes('Particularly Dangerous Situation');
-    // Direct URL to this specific warning
+    // Direct URL to this specific warning — human readable NWS page
     const alertId=props.id||'';
-    const directAlertUrl=w.id||`https://api.weather.gov/alerts/${alertId}`;
-    // Human readable NWS alert page
-    const nwsHtmlUrl=`https://alerts.weather.gov/cap/wwacapget.php?x=${alertId.split('/').pop()}` || 'https://www.weather.gov/alerts';
+    const directAlertUrl=`https://alerts.weather.gov/cap/wwacapget.php?x=${alertId.split('/').pop()}` || 'https://www.weather.gov/alerts';
     const primaryAff=dmaInfo?.a?.find(a=>a.p)||dmaInfo?.a?.[0];
     const otherAffs=dmaInfo?.a?.filter(a=>!a.p)||[];
     const q=primaryAff?getQ(primaryAff.o):Q_BR[Math.floor(Math.random()*Q_BR.length)];
